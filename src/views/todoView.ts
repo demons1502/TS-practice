@@ -21,11 +21,13 @@ class View {
       p.textContent = 'Have no tasks';
       this.listTodo.appendChild(p);
     } else {
-      console.log(todos);
       todos.forEach((todo) => {
         const taskEl = document.createElement('div');
         taskEl.classList.add('task');
-        taskEl.id = todo.id;
+        taskEl.id = todo._id;
+        taskEl.setAttribute('isCompleted', `${todo.isCompleted}`);
+
+        todo.isCompleted && taskEl.classList.add('active');
 
         const taskContentEl = document.createElement('div');
         taskContentEl.classList.add('content');
@@ -71,6 +73,69 @@ class View {
       if (this.input.value) {
         handler({ task: this.input.value });
         this.resetInput();
+      }
+    });
+  }
+
+  deleteTodoApi(handler: (id: string) => void) {
+    this.listTodo.addEventListener('click', (e: MouseEvent) => {
+      const target = e?.target as HTMLElement;
+      const idTarget = target.parentNode?.parentElement?.id;
+      if (
+        target.className === 'delete' &&
+        target.tagName.toLowerCase() === 'button'
+      ) {
+        if (idTarget) {
+          handler(idTarget);
+        }
+      }
+    });
+  }
+
+  updateTodo(handler: (id: string, data: TodoRequest) => void) {
+    this.listTodo.addEventListener('click', (e: MouseEvent) => {
+      const target = e?.target as HTMLElement;
+      const inputTarget = target?.parentNode?.previousSibling
+        ?.firstChild as HTMLInputElement;
+      const idTarget = target.parentNode?.parentElement?.id;
+
+      if (
+        target.className === 'edit' &&
+        target.tagName.toLowerCase() === 'button'
+      ) {
+        if (target.innerText.toLowerCase() === 'edit') {
+          target.innerText = 'Save';
+          inputTarget.removeAttribute('readonly');
+          inputTarget.focus();
+        } else {
+          target.innerText = 'Edit';
+          inputTarget.setAttribute('readonly', 'readonly');
+
+          idTarget && handler(idTarget, { task: inputTarget.value });
+        }
+      }
+    });
+  }
+
+  toggleTodo(handler: (id: string, data: TodoRequest) => void) {
+    this.listTodo.addEventListener('click', (e: MouseEvent) => {
+      const target = e?.target as HTMLElement;
+      const idTarget =
+        target.parentNode?.parentElement?.id || target.attributes[1]?.value;
+      let isCompleted;
+
+      if (target.parentNode?.parentElement) {
+        isCompleted =
+          target.parentNode?.parentElement.attributes[2]?.value === 'true'
+            ? true
+            : false;
+      }
+
+      if (target.tagName.toLowerCase() !== 'button') {
+        if (idTarget) {
+          // console.log(idTarget);
+          handler(idTarget, { isCompleted: !isCompleted });
+        }
       }
     });
   }

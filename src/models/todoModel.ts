@@ -47,7 +47,8 @@ class Model {
   async deleteTodo(id: string) {
     try {
       await deleteTodoApi(id);
-      this.getTodos();
+      await this.getTodos();
+      this.handleTodoChange(this.todos);
     } catch (error) {
       console.log(error);
     }
@@ -56,7 +57,8 @@ class Model {
   async updateTodo(id: string, todo: TodoRequest) {
     try {
       await updateTodoApi(id, todo);
-      this.getTodos();
+      await this.getTodos();
+      this.handleTodoChange(this.todos);
     } catch (error) {
       console.log(error);
     }
