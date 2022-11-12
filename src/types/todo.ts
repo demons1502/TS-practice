@@ -1,7 +1,7 @@
 export interface ITodo {
-  id: string;
+  _id: string;
   task: string;
-  isCompleted: boolean;
+  isCompleted?: boolean;
 }
 
-export type TodoRequest = Omit<ITodo, 'id' | 'isCompleted'>;
+export type TodoRequest = Partial<Omit<ITodo, '_id'>>;

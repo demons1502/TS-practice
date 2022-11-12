@@ -10,8 +10,11 @@ class Controller {
     this.view = view;
     this.model = model;
 
-    this.view.addTodo(this.handleAddTodo);
     this.model.bindTodoListChange(this.handleTodoListChange);
+    this.view.addTodo(this.handleAddTodo);
+    this.view.deleteTodoApi(this.handleDeleteTodo);
+    this.view.updateTodo(this.handleUpdateTodo);
+    this.view.toggleTodo(this.handleUpdateTodo);
   }
 
   async handleRenderTodo() {
@@ -21,6 +24,14 @@ class Controller {
 
   handleAddTodo = (todo: TodoRequest) => {
     this.model.addTodo(todo);
+  };
+
+  handleDeleteTodo = (id: string) => {
+    this.model.deleteTodo(id);
+  };
+
+  handleUpdateTodo = (id: string, todo: TodoRequest) => {
+    this.model.updateTodo(id, todo);
   };
 
   handleTodoListChange = (todos: ITodo[]) => {
